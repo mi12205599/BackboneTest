@@ -7,20 +7,87 @@ var application_root = __dirname,		// 当前执行的js的目录路径
 
 //Create server
 var app = express();
+app.use(bodyParser());			// 这个必须放在 post api的前面，因为内部要涉及到解析body
 
-app.get('/api',function(req,res) {
-	res.send('Library API is running.');
-});
-
-mongoose.connect('mongodb://localhost:27017/library_database');
+mongoose.connect('mongodb://localhost/library_database');
 
 var Book = new  mongoose.Schema({
 	title:String,
 	author:String,
 	releaseDate:Date
 });
-
 var  BookModel = mongoose.model('Book',Book);
+
+app.get('/api',function(req,res) {
+	res.send('Library API is running.');
+});
+
+app.get('/api/books',function(req,res) {
+	return  BookModel.find(function(err,books) {
+		if(!err){
+			return res.send(books);
+		}else{
+			return  console.log(err);
+		}
+	});
+});
+
+app.get('/api/books/:id',function(req,res){
+	return BookModel.findById(req.params.id,function(err,book) {
+		if(!err) {
+			res.send(book);
+		}else{
+			console.log(err);
+		}
+	});
+});	
+
+app.put('/api/books/:id',function(req,res) {
+	return BookModel.findById(req.params.id,function(err,book) {
+		book.title = rew.body.title;
+		book.author = rew.body.author;
+		book.releaseDate= rew.body.releaseDate;
+
+		return book.save(function(err) {
+			if(!err) {
+				console.log( req.title + "updated");
+				return res.send(book);
+			}else{
+				console.log(err);
+			}
+		});
+	});
+});
+
+app.delete('/api/books/:id',function(req,res) {
+	return BookModel.findById(req.params.id,function(err,book) {
+		return book.remove(function(err) {
+			if(!err) {
+				console.log( req.title + "updated");
+				return res.send('success');
+			}else{
+				console.log(err);
+			}
+		});
+	});
+});
+
+app.post('/api/books',function(req,res) {
+	var book  = new BookModel({
+		title:req.body.title,
+		author:req.body.author,
+		releaseDate:req.body.releaseDate
+	});
+
+	return book.save(function(err) {
+		if(!err) {
+			console.log('create');
+			return res.send(book);
+		}else{
+			console.log(err);
+		}
+	});
+});
 
 app.configure(function() {
 	app.use( express.bodyParser());
@@ -32,21 +99,14 @@ app.configure(function() {
 	var  static_path =  path.join( application_root,'site');
 	console.log(" The static  fils path is %s",static_path);
 	app.use( express.static(static_path) );
+
 	app.use(express.errorHandler({
 		dumpExceptions:true,
 		showStack: true
 	}) );
 });
 
-app.get('api/books',function(req,res) {
-	return  BookModel.find(function(err,books) {
-		if(!err){
-			return res.send(books);
-		}else{
-			return  console.log(err);
-		}
-	});
-});
+
 
 
 //Start server

@@ -4,9 +4,13 @@ app.LibraryView = Backbone.View.extend({
 	el:'#books',
 
 	initialize: function( initializeBooks) {
-		this.listenTo(this.collection,'add',this.renderBook );
-		this.collection = new app.Library(initializeBooks);
+		this.collection = new app.Library();
+		this.collection.fetch(); 
 		this.render();
+		this.listenTo(this.collection,'reset',this.render);
+		this.listenTo(this.collection,'add',this.renderBook );
+		// this.collection = new app.Library(initializeBooks);
+		
 	},
 
 	events: {
