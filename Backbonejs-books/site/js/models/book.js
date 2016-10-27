@@ -8,8 +8,9 @@ app.Book = Backbone.Model.extend({
 		releaseDate:'Unknow',
 		keywords:'None keyword'
 	},
-	parse:function(res) {
+	idAttribute:'_id',
+/*	parse:function(res) {
 		res.id =res._id;
 		return res;
-	},
+	}, */
 });

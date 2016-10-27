@@ -12,5 +12,6 @@ $(function() {
 	];
 
 */
+ 	$( '#releaseDate' ).datetimepicker();
 	new app.LibraryView(books);
 });
