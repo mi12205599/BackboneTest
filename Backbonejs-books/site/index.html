@@ -1,19 +1,28 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
     <head>
         <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
         <title>Backbone.js Library</title>
         <link rel="stylesheet" href="css/screen.css">
         <link rel="stylesheet" href="css/jquery.datetimepicker.min.css">
+        <link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.3.0/css/bootstrap.min.css">
     </head>
     <body>
-        <div id="books">
+        <div id="books"   class="container">
             <form id="addBook" action="#">
                 <div>
-                    <label for="coverImage">CoverImage: </label><input id="coverImage" type="file" />
-                    <label for="title">Title: </label><input id="title" type="text" />
-                    <label for="author">Author: </label><input id="author" type="text" />
-                    <label for="releaseDate">Release date: </label><input id="releaseDate" type="text" />
+                    <label for="coverImage">CoverImage: </label> 
+                    <input id="coverImage" type="file" />
+                    <label for="title">Title: </label>
+                    <input id="title" type="text" />
+                    <label for="author">Author: </label>
+                    <input id="author" type="text" />
+                    <label for="content">Content: </label>  
+                    <input id="content"  class="edit-container"   type="text" /> 
+                    <label for="releaseDate">Release date: </label> 
+                    <input id="releaseDate" type="text" />
                     <button id="add">Add</button>
                 </div>
             </form>
@@ -24,14 +33,13 @@
         <ul>
             <li><%= title %></li>
             <li><%= author %></li>
-           <!-- <li><%= releaseDate %></li>   -->
-
-            <li><%= $.format.date(new Date(releaseDate), 'MMM yyyy') %></li>
+            <li><%= content %></li>
+            <li><%= $.format.date(new Date(releaseDate), 'dd/MMM yyyy ') %></li>
         </ul>
         <button class="delete">Delete</button>
     </script>
         
-        <script src="js/lib/jquery.js"></script>
+        <script src="js/lib/jquery-2.1.4.js"></script>
         <script src="js/lib/underscore.js"></script>
         <script src="js/lib/backbone.js"></script>
         <script src="js/models/book.js"></script>
@@ -41,5 +49,6 @@
         <script src="js/app.js"></script>
         <script src="js/lib/jquery-dateFormat.js"></script>
         <script src="js/lib/jquery.datetimepicker.full.js"></script>
+        <script src="http://cdn.bootcss.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
     </body>
 </html>

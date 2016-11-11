@@ -1,0 +1,43 @@
+var  ZommbieView = Backbone.View.extend({
+	template:'#my-view-template',
+
+	initialize: function() {
+		this.listenTo( this.model,'change', this.render);
+	},
+
+	close: function() {
+		this.stopListening();
+	},
+
+	render : function() {
+		alert(' We are rendering the  view.');
+	}
+});
+
+var  Person =  Backbone.Model.extend({
+	defaults: {
+		firstname: 'hj',
+		lastname:'hj',
+		email:'hj@126.com',
+		age:27
+	}
+});
+
+var   Derick  = new Person({
+	firstname:'Derick',
+	lastname:'Bailey',
+	email:'derick@example.com'
+});
+
+var  zombieView   = new ZommbieView({
+	model: Derick
+});
+
+zombieView.close();
+
+zombieView = new  ZommbieView({
+	model: Derick
+});
+
+
+Derick.set('firstname','lalala');

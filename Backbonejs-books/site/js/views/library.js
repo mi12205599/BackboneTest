@@ -9,7 +9,6 @@ app.LibraryView = Backbone.View.extend({
 	 	this.render();
 		this.listenTo(this.collection,'reset',this.render);
 		this.listenTo(this.collection,'add',this.renderBook );
-		// this.collection = new app.Library(initializeBooks);
 	},
 
 	events: {
@@ -37,7 +36,7 @@ app.LibraryView = Backbone.View.extend({
 	},
 	renderBook: function(item) {
 		var  bookView = new app.BookView({ model:item });
-
+	     // 在操作form dom之后加上 列表 dom
 		this.$el.append(bookView.render().el);
 	}
 });
