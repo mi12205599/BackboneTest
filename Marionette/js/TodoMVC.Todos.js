@@ -1,8 +1,10 @@
+var  TodoMVC = TodoMVC || {};
 
-TodoMVC.modele('Todos',function(Todos,App,Backbone,Marionette,$,_) {
-	 var localStorageKey ='todos-backbone-marionettejs';
+(function() {
+	'use strict';
 
-	 Todos.Todo =Backbone.Model.etend({
+	// Todo model
+	TodoMVC.Todo = Backbone.Model.etend({
 	 	localStorage: new  Backbone.localStorage('localStorageKey'),
 
 	 	default: {
@@ -12,7 +14,7 @@ TodoMVC.modele('Todos',function(Todos,App,Backbone,Marionette,$,_) {
 	 	},
 
 	 	initialize:function(){
-	 		if( this.isNew ) {
+	 		if( this.isNew() ) {		//isNew 是原生方法
 	 			this.set('created',Date.now);
 	 		}
 	 	},
@@ -26,7 +28,8 @@ TodoMVC.modele('Todos',function(Todos,App,Backbone,Marionette,$,_) {
 	 	},
 	 });
 
-	 Todos.TodoList= Backbone.Collection.extend({
+	 // Todo collection
+	 TodoMVC.TodoList= Backbone.Collection.extend({
 	 	model: Todos.Todo,
 		localStorage:new Backbone.localStorage('localStorageKey'),
 
@@ -47,4 +50,4 @@ TodoMVC.modele('Todos',function(Todos,App,Backbone,Marionette,$,_) {
 		},
 
 	 });
-});
+})();

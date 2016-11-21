@@ -1,12 +1,20 @@
 
+var TodoMVC =TodoMVC ||{};
 
-TodoMVC.module('TodoList.Views',function(Views,App,Backbone,Marionette,$,_){
-	Views.ItemView =  Marionette.ItemView.extend({
+(function() {
+	'use strict';
+	var filterChannel  = Backbone.Radio.channel('filter');
+
+	//  Todo Item  View
+	TodoMVC.TodoView = Backbone.Marionette.ItemView.extend({
 		tagName:'li',
 		template:'#template-todoItemView',
 
 		ui:{
-			edit:'.edit'
+			edit:'.edit',
+			destory:'.destory',
+			label:'label',
+			toggle:'.toggle'
 		},
 
 		events:{
@@ -66,10 +74,10 @@ TodoMVC.module('TodoList.Views',function(Views,App,Backbone,Marionette,$,_){
 		completeEdit:function() {
 			this.$el.removeCLass('editing');
 		},
-
 	});
 
-	Views.ListView = Backbone.Marionette.CompositeView.extend({
+	// TodoMVC Item List View 
+	TodoMVC.ListView = Backbone.Marionette.CompositeView.extend({
 		template:'#template-todoListCompositeView',
 		childView :Views.ItemView,
 		childViewContainer:'#todo-list',
@@ -108,11 +116,4 @@ TodoMVC.module('TodoList.Views',function(Views,App,Backbone,Marionette,$,_){
 		}
 	});
 
-// handle for filtering the list of items by showing and  hiding through the use of various css  class
-	App.vent.on('todoList:filter',function() {
-		filter =filter || 'all';
-		$('#todoapp').attr('class','filter-' + filter);
-	});
-
-
-});
+})();

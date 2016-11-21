@@ -1,13 +1,9 @@
+var  TodoMVC = TodoMVC || {};
 
-var  TodoMVC = new Backbone.Marionette.Application();
+(function() {
+	'use strict';
 
-TodoMVC.addRegions({
-	header: '#header',
-	main:'#main',
-	footer:'#footer'
-});
-
-TodoMVC.on('start',function() {
-	Backbone.history.start();
-});
-
+	TodoMVC.App.on("start",function() {
+		var controller = new TodoMVC.Controller();
+	});
+})

@@ -1,14 +1,24 @@
 
-TodoMVC.module('Layout',function(LayOut,App,Backbone,$,_) {
+var  TodoMVC = TodoMVC ||{};
 
-	Layout.Header = Backbone.Marionette.ItemView.extend({
+(function() {
+	'use strict';
+	var  filterChannel = Backbone.Marionette.Radio.channel("filter");
+
+	TodoMVC.RootLayout =  Backbone.Marionette.LayoutView.extend({
+		el:"#todoapp",
+		regions:{
+			header:'#header',
+			main:'#main',
+			footer:'#footer'
+		}
+	});
+
+	TodoMVC.HeaderLayout =   Backbone.Marionette.ItemView.extend({
 		template:'#template-header',
-
 		ui:{
 			input: '#new-todo'
 		},
-
-		//  鼠标离开或者按下空格键都触发 创建Todo
 		events :{
 			'keypress #new-todo':'onInputKeypress',
 			'blur #new-todo':'onTodoBlur'
@@ -38,51 +48,65 @@ TodoMVC.module('Layout',function(LayOut,App,Backbone,$,_) {
 		},
 	});
 
-	// Layout  Footer View 
-	Layout.Footer = Backbone.Marionette.ItemView.extend({
-		template:'#template-footer',
-
-		ui:{
-			toodCount: '#todo-count .count',
-			todoCountlabel:'#todo-count .label',
-			clearCount:'#clear-completed .count',
-			filters:'#filter a'
+	TodoMVC.FooterLayout  = Backbone.Marionette.ItemView.extend({
+		template: '#template-footer',
+		// UI bindings create cached attributes that
+		// point to jQuery selected objects
+		ui: {
+			filters: '#filters a',
+			completed: '.completed a',
+			active: '.active a',
+			all: '.all a',
+			summary: '#todo-count',
+			clear: '#clear-completed'
 		},
 
-		events:{
-			'click #clear-completed':'onClearCompleted'
+		events: {
+			'click @ui.clear': 'onClearClick'
 		},
 
-		initialize:function() {
-			 this.bind(App.vent,'todoList:filter',this.updateFilterSection,this);
-			 this.bind(this.collection,'all',this.updateCount,this);
+		collectionEvents: {
+			all: 'render'
 		},
 
- 		onRender: function () {
- 			this.updateCount();
- 		},
+		templateHelpers: {
+			activeCountLabel: function () {
+				return (this.activeCount === 1 ? 'item' : 'items') + ' left';
+			}
+		},
 
- 		updateCount:function(){
- 			var activeCount = this.collection.getActive().length;
- 			var completedCount = this.collection.getCompleted().length;
- 			this.ui.todoCount.html( activeCount);
+		initialize: function () {
+			this.listenTo(filterChannel.request('filterState'), 'change:filter', this.updateFilterSelection, this);
+		},
 
- 			this.ui.todoCountlabel.html( activeCount === 1 ?'Item':'Items');
+		serializeData: function () {
+			var active = this.collection.getActive().length;
+			var total = this.collection.length;
 
- 			this.ui.clearCount.html( completedCount === 0?'':'('+ completedCount +')');
+			return {
+				activeCount: active,
+				totalCount: total,
+				completedCount: total - active
+			};
+		},
 
- 		},
-		onClearCompleted:function() {
-			var  completed =  this.collection.getCompleted();
-			completed.forEach(function destory(todo) {
-				todo.destory();
+		onRender: function () {
+			this.$el.parent().toggle(this.collection.length > 0);
+			this.updateFilterSelection();
+		},
+
+		updateFilterSelection: function () {
+			this.ui.filters.removeClass('selected');
+			this.ui[filterChannel.request('filterState').get('filter')]
+			.addClass('selected');
+		},
+
+		onClearClick: function () {
+			var completed = this.collection.getCompleted();
+			completed.forEach(function (todo) {
+				todo.destroy();
 			});
-		},
+		}
 
-		updateFilterSection : function(filter){
-			this.ui.filter.removeClass('selected')
-				.filter('[href="#' + filter+'"]')
-				.addClass('selected');
-		},
 	});
-});
+})();
