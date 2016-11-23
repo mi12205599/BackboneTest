@@ -4,17 +4,15 @@ var  TodoMVC = TodoMVC || {};
 	'use strict';
 
 	// Todo model
-	TodoMVC.Todo = Backbone.Model.etend({
-	 	localStorage: new  Backbone.localStorage('localStorageKey'),
-
-	 	default: {
+	TodoMVC.Todo = Backbone.Model.extend({
+	 	defaults: {
 	 		title:'',
-	 		completed:false,
+	 		completed :false,
 	 		created:0
 	 	},
 
 	 	initialize:function(){
-	 		if( this.isNew() ) {		//isNew 是原生方法
+	 		if( this.isNew()) {		//isNew 是原生方法
 	 			this.set('created',Date.now);
 	 		}
 	 	},
@@ -26,28 +24,39 @@ var  TodoMVC = TodoMVC || {};
 	 	isCompleted:function() {
 	 		this.get('completed');
 	 	},
+
+	 	matchesFilter: function (filter) {
+			if (filter === 'all') {
+				return true;
+			}
+
+			if (filter === 'active') {
+				return !this.isCompleted();
+			}
+			return this.isCompleted();
+		}
 	 });
 
 	 // Todo collection
-	 TodoMVC.TodoList= Backbone.Collection.extend({
-	 	model: Todos.Todo,
-		localStorage:new Backbone.localStorage('localStorageKey'),
+	TodoMVC.TodoList = Backbone.Collection.extend({
+	 	model: TodoMVC.Todo,
+		
+		localStorage: new Backbone.LocalStorage('todos-backbone-marionette'),
+
+		comparator:'created',
 
 		getCompleted:function() {
 			return this.filter(this._isCompleted );
-		},
-
-		_isCompleted:function() {
-			return this.isCompleted();
 		},
 
 		getActive:function() {
 			return  this.reject(this._isCompleted);
 		},
 
-		comparator:function(todo) {
-			return todo.get('created');
-		},
+		_isCompleted:function(todo) {
+			return todo.isCompleted();
+		}
 
 	 });
+
 })();

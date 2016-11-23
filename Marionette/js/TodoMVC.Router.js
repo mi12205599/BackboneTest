@@ -6,29 +6,31 @@ var  TodoMVC = TodoMVC || {};
 
 	var filterChannel = Backbone.Radio.channel('filter');
 
+	// Tdodo Router
 	TodoMVC.Router = Marionette.AppRouter.extend({
-		appRouter:{
+		appRouters:{
 			'*filter':'filterItems'
 		}
 	});
 
+	//  Todo Controller
 	//  Control the workflow and logic that  exists  at the application level
-	TodoMVC.Controller = function() {
-		this.todoList = new TodoMVC.TodoList();
-	};
+	TodoMVC.Controller = Backbone.Marionette.Object.extend({
+		initialize:function() {
+			this.todoList = new TodoMVC.TodoList();
+		},
 
-	_.extend(TodoMVC.Controller.prototype,{
 		start:function() {
 			this.showHeader(this.todoList);
 			this.showFooter(this.todoList);
 			this.showTodoList(this.todoList);
 
-			this.todoList.on('all',updateHiddenElements,this);
+			this.todoList.on('all',this.updateHiddenElements,this);
 			this.todoList.fetch();
 		},
 
 		showHeader:function(todoList) {
-			var header = new TodoMVC.HeaderLayOut({
+			var header = new TodoMVC.HeaderLayout({
 				collection:todoList
 			});
 
@@ -36,7 +38,7 @@ var  TodoMVC = TodoMVC || {};
 		},
 
 		showFooter: function(todoList) {
-			var  footer =  new TodoMVC.FooterLayOut({
+			var  footer =  new TodoMVC.FooterLayout({
 				collection:todoList
 			});
 			TodoMVC.App.root.showChildView('footer',footer);
@@ -57,17 +59,4 @@ var  TodoMVC = TodoMVC || {};
 			filterChannel.request('filterState').set('filter',newFilter);
 		}
 	});
-
-	// Get the TodoMVC  up and running  by initializing the mediator
-	// when the app is started, pull in all of the existing todo items and display them
-	TodoMVC.addInitializer(function() {
-		var controller =  new TodoMVC.Controller();
-		new TodoMVC.Router({
-			controller:controller
-		});
-
-		controller.start();
-
-	});
-
-};
+})();

@@ -3,9 +3,9 @@ var  TodoMVC = TodoMVC ||{};
 
 (function() {
 	'use strict';
-	var  filterChannel = Backbone.Marionette.Radio.channel("filter");
+	var  filterChannel = Backbone.Radio.channel("filter");
 
-	TodoMVC.RootLayout =  Backbone.Marionette.LayoutView.extend({
+	TodoMVC.RootLayout = Backbone.Marionette.LayoutView.extend({
 		el:"#todoapp",
 		regions:{
 			header:'#header',
@@ -14,36 +14,30 @@ var  TodoMVC = TodoMVC ||{};
 		}
 	});
 
-	TodoMVC.HeaderLayout =   Backbone.Marionette.ItemView.extend({
+	TodoMVC.HeaderLayout = Backbone.Marionette.ItemView.extend({
 		template:'#template-header',
 		ui:{
 			input: '#new-todo'
 		},
 		events :{
 			'keypress #new-todo':'onInputKeypress',
-			'blur #new-todo':'onTodoBlur'
+			'keyup #new-todo':'onInputKeyup'
 		},
 
-		onTodoBlur:function(todo){
-			var  todoText = this.ui.input.val().trim();
-			this.createTodo(todoText);
+		onInputKeyup:function(e){
+			var ESC_KEY = 27;
+
+			if (e.which === ESC_KEY) {
+				this.render();
+			}
 		},
 
-		createTodo: function(todoText){
-			if(todoText ==="" )  return;
-			this.collection.create('title',todoText);
-			completeAdd();
-		},
-
-		completeAdd: function() {
-			this.ui.input.val("");
-		},
-
-		onInputKeypress:function() {
+		onInputKeypress:function(e) {
 			var ENTER_KEY =13;
 			var todoText = this.ui.input.val().trim();
-			if( ENTER_KEY === e.which && !todoText ) {
-				this.createTodo(todoText);
+			if( ENTER_KEY === e.which && todoText ) {
+				this.collection.create({title:todoText});
+				this.ui.input.val('');
 			}
 		},
 	});
